@@ -62,3 +62,4 @@ from .views.vulnerabilities.deserialization_views import *
 from .views.vulnerabilities.ssrf_views import *
 from .views.vulnerabilities.crypto_views import *
 from .views.vulnerabilities.access_control_views import *
+from .views.vulnerabilities.auth_service import *

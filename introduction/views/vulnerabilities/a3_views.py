@@ -105,19 +105,22 @@ def a3_lab2(request):
             action = request.POST.get('action')
             
             if action == 'search':
-                # Insecure: Direct string concatenation in SQL query
+                # Secure: Using parameterized queries to prevent SQL injection
                 search_term = request.POST.get('search_term', '')
                 
-                # Insecure: Using raw SQL with string formatting
-                query = f"""
+                # Secure: Using parameterized query with placeholders
+                query = """
                     SELECT id, username, email, is_superuser 
                     FROM auth_user 
-                    WHERE username LIKE '%{search_term}%' 
-                    OR email LIKE '%{search_term}%'
+                    WHERE username LIKE %s 
+                    OR email LIKE %s
                 """
                 
+                # Prepare search parameter with wildcards
+                search_param = f'%{search_term}%'
+                
                 with connection.cursor() as cursor:
-                    cursor.execute(query)
+                    cursor.execute(query, [search_param, search_param])
                     columns = [col[0] for col in cursor.description]
                     context['results'] = [
                         dict(zip(columns, row))

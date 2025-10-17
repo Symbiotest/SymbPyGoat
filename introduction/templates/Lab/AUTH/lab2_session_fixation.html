@@ -1,0 +1,166 @@
+{% extends 'introduction/base.html' %}
+{% block content %}
+{% block title %}
+<title>Lab 2: Session Fixation Attack</title>
+{% endblock %}
+
+<div class="content">
+    <h2>🎯 Lab 2: Session Fixation Attack Vulnerability</h2>
+    
+    <div class="alert alert-warning" role="alert">
+        <strong>⚠️ Vulnerability Focus:</strong> This lab demonstrates session fixation attacks where sessions are not properly regenerated after authentication.
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h5>🔑 Login with Potential Session Fixation</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="form-group mb-3">
+                            <label for="username">Username:</label>
+                            <input type="text" class="form-control" name="username" id="username" required>
+                            <small class="form-text text-muted">Use any username from Lab 1 (if you've created users)</small>
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label for="password">Password:</label>
+                            <input type="password" class="form-control" name="password" id="password" required>
+                            <small class="form-text text-muted">Use the corresponding password (visible in Lab 1 table)</small>
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label for="session_id">Session ID (Optional - For Attack Simulation):</label>
+                            <input type="text" class="form-control" name="session_id" id="session_id" 
+                                   placeholder="Leave empty for normal login, or provide attacker-controlled session ID">
+                            <small class="form-text text-danger">
+                                🚨 Vulnerability: This field allows an attacker to fix the session ID before authentication
+                            </small>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-warning">Login</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-info">
+                <div class="card-header bg-info text-white">
+                    <h6>🎯 Attack Simulation</h6>
+                </div>
+                <div class="card-body">
+                    <p><strong>Try this attack:</strong></p>
+                    <ol>
+                        <li>Enter a session ID: <code>evil_session_123</code></li>
+                        <li>Login with valid credentials</li>
+                        <li>Notice the session ID is preserved</li>
+                        <li>In a real attack, the attacker would already know this session ID</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Educational Content -->
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h5>💀 How Session Fixation Works</h5>
+                </div>
+                <div class="card-body">
+                    <ol>
+                        <li><strong>Setup:</strong> Attacker obtains a valid session ID from the application</li>
+                        <li><strong>Fixation:</strong> Attacker tricks user into using this session ID (via email, URL, etc.)</li>
+                        <li><strong>Authentication:</strong> User logs in using the attacker's session ID</li>
+                        <li><strong>Hijacking:</strong> Attacker uses the known session ID to access user's account</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card border-success">
+                <div class="card-header bg-success text-white">
+                    <h5>🛡️ Prevention Measures</h5>
+                </div>
+                <div class="card-body">
+                    <ul>
+                        <li><strong>Session Regeneration:</strong> Generate new session ID after successful login</li>
+                        <li><strong>Session Validation:</strong> Verify session ownership and integrity</li>
+                        <li><strong>Secure Cookies:</strong> Use HttpOnly, Secure, and SameSite flags</li>
+                        <li><strong>Session Timeout:</strong> Implement appropriate session expiration</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Code Example Section -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card border-warning">
+                <div class="card-header bg-warning text-dark">
+                    <h5>📝 Vulnerable vs Secure Code</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="text-danger">❌ Vulnerable Code:</h6>
+                            <pre class="bg-light p-3"><code># Accepts external session ID
+session_id = request.POST.get('session_id') or generate_session()
+# No regeneration after login
+session = Session(id=session_id, user=user)</code></pre>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-success">✅ Secure Code:</h6>
+                            <pre class="bg-light p-3"><code># Always generate new session after login
+old_session_id = request.session.session_key
+request.session.cycle_key()  # Regenerate session ID
+new_session_id = request.session.session_key</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Attack Scenarios -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card border-info">
+                <div class="card-header bg-info text-white">
+                    <h5>🔍 Real-World Attack Scenarios</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h6>📧 Email Attack</h6>
+                            <p>Attacker sends email with malicious login link containing fixed session ID</p>
+                        </div>
+                        <div class="col-md-4">
+                            <h6>🌐 Cross-Site Attack</h6>
+                            <p>Malicious website sets session cookie before redirecting to legitimate site</p>
+                        </div>
+                        <div class="col-md-4">
+                            <h6>📱 Physical Access</h6>
+                            <p>Attacker with physical access sets session ID on public computer</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a href="/auth-service/lab1" class="btn btn-secondary">← Previous Lab</a>
+        <a href="/auth-service" class="btn btn-info">Lab Home</a>
+        <a href="/auth-service/lab3" class="btn btn-primary">Next Lab: SQL Injection →</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,6 +1,6 @@
-from django.urls import path,include
-from .views import *
+from django.urls import path, include
+from .views import ChallengeView
 
 urlpatterns = [
-    path('<str:challenge>', DoItFast.as_view(), name='do-it-fast'),
+    path('<str:challenge>', ChallengeView.as_view(), name='challenge-management'),
 ]

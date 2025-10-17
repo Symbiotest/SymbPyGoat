@@ -1,0 +1,128 @@
+{% extends 'introduction/base.html' %}
+{% block content %}
+{% block title %}
+<title>Vulnerable Authentication Service - Educational Labs</title>
+{% endblock %}
+
+<div class="content">
+    <h2>Vulnerable Authentication Service - Educational Security Labs</h2>
+    
+    <div class="alert alert-warning" role="alert">
+        <strong>⚠️ Educational Warning:</strong> These labs contain intentional security vulnerabilities. 
+        They are designed for cybersecurity education and should NEVER be used in production environments.
+    </div>
+
+    <div class="box">
+        <h3>OWASP Top 10 - A07:2021 Identification and Authentication Failures</h3>
+        <p class="bp">
+            This comprehensive authentication service demonstrates multiple critical vulnerabilities that 
+            occur when application functions related to authentication and session management are 
+            implemented incorrectly, allowing attackers to compromise passwords, keys, or session tokens, 
+            or to exploit other implementation flaws to assume other users' identities temporarily or permanently.
+        </p>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <h3>Available Laboratory Exercises</h3>
+            
+            <!-- Lab 1: Plain Text Password Storage -->
+            <div class="card mb-3">
+                <div class="card-header bg-danger text-white">
+                    <h5>🔓 Lab 1: Plain Text Password Storage</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Vulnerability:</strong> Passwords stored without encryption or hashing</p>
+                    <p><strong>Learning Objective:</strong> Understand the critical importance of proper password hashing</p>
+                    <p><strong>Attack Vector:</strong> Database compromise reveals all user passwords</p>
+                    <a href="/auth-service/lab1" class="btn btn-danger">Start Lab 1</a>
+                </div>
+            </div>
+
+            <!-- Lab 2: Session Fixation -->
+            <div class="card mb-3">
+                <div class="card-header bg-warning text-dark">
+                    <h5>🎯 Lab 2: Session Fixation Attack</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Vulnerability:</strong> Sessions not regenerated after authentication</p>
+                    <p><strong>Learning Objective:</strong> Learn proper session lifecycle management</p>
+                    <p><strong>Attack Vector:</strong> Attacker provides session ID before user authentication</p>
+                    <a href="/auth-service/lab2" class="btn btn-warning">Start Lab 2</a>
+                </div>
+            </div>
+
+            <!-- Lab 3: SQL Injection Authentication Bypass -->
+            <div class="card mb-3">
+                <div class="card-header bg-danger text-white">
+                    <h5>💉 Lab 3: SQL Injection Authentication Bypass</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Vulnerability:</strong> Authentication queries vulnerable to SQL injection</p>
+                    <p><strong>Learning Objective:</strong> Understanding parameterized queries and input validation</p>
+                    <p><strong>Attack Vector:</strong> Malicious input bypasses authentication logic</p>
+                    <a href="/auth-service/lab3" class="btn btn-danger">Start Lab 3</a>
+                </div>
+            </div>
+
+            <!-- Lab 4: Predictable Reset Tokens -->
+            <div class="card mb-3">
+                <div class="card-header bg-warning text-dark">
+                    <h5>🎲 Lab 4: Predictable Password Reset Tokens</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Vulnerability:</strong> Reset tokens generated using weak algorithms</p>
+                    <p><strong>Learning Objective:</strong> Cryptographically secure random token generation</p>
+                    <p><strong>Attack Vector:</strong> Token prediction enables unauthorized account access</p>
+                    <a href="/auth-service/lab4" class="btn btn-warning">Start Lab 4</a>
+                </div>
+            </div>
+
+            <!-- Lab 5: Username Enumeration -->
+            <div class="card mb-3">
+                <div class="card-header bg-info text-white">
+                    <h5>🕵️ Lab 5: Username Enumeration</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Vulnerability:</strong> Information disclosure through authentication responses</p>
+                    <p><strong>Learning Objective:</strong> Consistent error messaging and timing considerations</p>
+                    <p><strong>Attack Vector:</strong> Response analysis reveals valid usernames</p>
+                    <a href="/auth-service/lab5" class="btn btn-info">Start Lab 5</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <h4>🎯 Learning Objectives</h4>
+            <ul>
+                <li>Understand common authentication vulnerabilities</li>
+                <li>Learn to identify security flaws in authentication systems</li>
+                <li>Practice exploitation techniques in a safe environment</li>
+                <li>Develop secure authentication implementation skills</li>
+            </ul>
+        </div>
+        <div class="col-md-6">
+            <h4>🛡️ Mitigation Strategies</h4>
+            <ul>
+                <li>Implement proper password hashing (bcrypt, Argon2)</li>
+                <li>Use cryptographically secure session management</li>
+                <li>Apply input validation and parameterized queries</li>
+                <li>Implement rate limiting and account lockout</li>
+                <li>Use consistent error messages and timing</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="alert alert-info mt-4" role="alert">
+        <h5>🔗 API Testing Endpoints</h5>
+        <p>For advanced testing, the following API endpoints are available:</p>
+        <ul>
+            <li><code>POST /auth-service/api/authenticate</code> - Test authentication methods</li>
+            <li><code>POST /auth-service/api/reset-token</code> - Generate password reset tokens</li>
+            <li><code>GET /auth-service/api/session-info</code> - View session information</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

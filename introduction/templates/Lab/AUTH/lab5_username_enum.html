@@ -1,0 +1,220 @@
+{% extends 'introduction/base.html' %}
+{% block content %}
+{% block title %}
+<title>Lab 5: Username Enumeration</title>
+{% endblock %}
+
+<div class="content">
+    <h2>🕵️ Lab 5: Username Enumeration Vulnerability</h2>
+    
+    <div class="alert alert-info" role="alert">
+        <strong>⚠️ Vulnerability Focus:</strong> This lab demonstrates how information disclosure through authentication responses and timing attacks can reveal valid usernames.
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5>🔑 Login Form with Information Disclosure</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="form-group mb-3">
+                            <label for="username">Username:</label>
+                            <input type="text" class="form-control" name="username" id="username" required>
+                            <small class="form-text text-muted">Try both existing and non-existing usernames</small>
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label for="password">Password:</label>
+                            <input type="password" class="form-control" name="password" id="password" required>
+                            <small class="form-text text-muted">Use any password - focus on username enumeration</small>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-info">Login & Analyze Response</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-warning">
+                <div class="card-header bg-warning text-dark">
+                    <h6>🎯 Enumeration Tests</h6>
+                </div>
+                <div class="card-body">
+                    <p><strong>Try these username tests:</strong></p>
+                    
+                    <h6>Valid Usernames:</h6>
+                    <p>Use usernames from Lab 1 registration</p>
+                    
+                    <h6>Invalid Usernames:</h6>
+                    <ul>
+                        <li><code>nonexistent</code></li>
+                        <li><code>testuser</code></li>
+                        <li><code>randomname</code></li>
+                    </ul>
+                    
+                    <h6>What to Observe:</h6>
+                    <ul>
+                        <li>Different error messages</li>
+                        <li>Response time differences</li>
+                        <li>Behavior patterns</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Educational Content -->
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h5>💀 How Username Enumeration Works</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Information Disclosure Methods:</strong></p>
+                    <ul>
+                        <li><strong>Different Error Messages:</strong> "Invalid username" vs "Invalid password"</li>
+                        <li><strong>Timing Attacks:</strong> Different response times for valid/invalid users</li>
+                        <li><strong>HTTP Response Codes:</strong> Different status codes for different scenarios</li>
+                        <li><strong>Application Behavior:</strong> UI changes based on username validity</li>
+                    </ul>
+                    
+                    <p><strong>Attack Process:</strong></p>
+                    <ol>
+                        <li>Test common usernames against the application</li>
+                        <li>Analyze response patterns and timing</li>
+                        <li>Build a list of valid usernames</li>
+                        <li>Use enumerated usernames for targeted attacks</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card border-success">
+                <div class="card-header bg-success text-white">
+                    <h5>🛡️ Prevention Techniques</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Consistent Response Design:</strong></p>
+                    <ul>
+                        <li><strong>Generic Messages:</strong> "Invalid credentials" for all failures</li>
+                        <li><strong>Constant Timing:</strong> Same response time regardless of validity</li>
+                        <li><strong>Identical HTTP Codes:</strong> Same status codes for all auth failures</li>
+                        <li><strong>Rate Limiting:</strong> Prevent automated enumeration attempts</li>
+                    </ul>
+                    
+                    <p><strong>Additional Measures:</strong></p>
+                    <ul>
+                        <li>CAPTCHA after failed attempts</li>
+                        <li>Account lockout policies</li>
+                        <li>Monitoring and alerting</li>
+                        <li>Multi-factor authentication</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Timing Attack Demonstration -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card border-warning">
+                <div class="card-header bg-warning text-dark">
+                    <h5>⏱️ Timing Attack Analysis</h5>
+                </div>
+                <div class="card-body">
+                    <p>This lab implements deliberate timing differences to demonstrate timing attacks:</p>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="text-danger">❌ Vulnerable Timing:</h6>
+                            <ul>
+                                <li><strong>Valid Username:</strong> ~100ms delay (password processing)</li>
+                                <li><strong>Invalid Username:</strong> ~0ms delay (immediate response)</li>
+                                <li><strong>Pattern:</strong> Timing reveals username validity</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-success">✅ Secure Timing:</h6>
+                            <ul>
+                                <li><strong>All Requests:</strong> Same processing time</li>
+                                <li><strong>Implementation:</strong> Always perform full authentication check</li>
+                                <li><strong>Pattern:</strong> No timing information disclosed</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Attack Scenarios -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card border-info">
+                <div class="card-header bg-info text-white">
+                    <h5>🔍 Real-World Attack Scenarios</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h6>📊 Automated Enumeration</h6>
+                            <p>Attackers use scripts to test thousands of common usernames automatically</p>
+                        </div>
+                        <div class="col-md-4">
+                            <h6>🎯 Targeted Attacks</h6>
+                            <p>Focus on high-value accounts like admin, administrator, root, etc.</p>
+                        </div>
+                        <div class="col-md-4">
+                            <h6>📧 Email Validation</h6>
+                            <p>Test if specific email addresses are registered in the system</p>
+                        </div>
+                    </div>
+                    
+                    <h6 class="mt-3">Common Username Lists:</h6>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <p><strong>Administrative:</strong><br>
+                            admin, administrator, root, superuser</p>
+                        </div>
+                        <div class="col-md-3">
+                            <p><strong>Common Names:</strong><br>
+                            john, smith, admin, test, user</p>
+                        </div>
+                        <div class="col-md-3">
+                            <p><strong>Default Accounts:</strong><br>
+                            guest, demo, default, system</p>
+                        </div>
+                        <div class="col-md-3">
+                            <p><strong>Email Patterns:</strong><br>
+                            admin@domain.com, info@domain.com</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a href="/auth-service/lab4" class="btn btn-secondary">← Previous Lab</a>
+        <a href="/auth-service" class="btn btn-info">Lab Home</a>
+        <span class="btn btn-outline-secondary disabled">Last Lab</span>
+    </div>
+</div>
+
+<style>
+code {
+    background-color: #f8f9fa;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-size: 0.9em;
+}
+</style>
+
+{% endblock %}

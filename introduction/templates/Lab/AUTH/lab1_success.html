@@ -1,0 +1,49 @@
+{% extends 'introduction/base.html' %}
+{% block content %}
+{% block title %}
+<title>Lab 1: Login Successful</title>
+{% endblock %}
+
+<div class="content">
+    <div class="alert alert-success" role="alert">
+        <h4 class="alert-heading">🎉 Login Successful!</h4>
+        <p>Welcome back, <strong>{{ user.username }}</strong>!</p>
+    </div>
+
+    <div class="card">
+        <div class="card-header bg-success text-white">
+            <h5>User Profile Information</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>User ID:</strong> {{ user.user_id }}</p>
+                    <p><strong>Username:</strong> {{ user.username }}</p>
+                    <p><strong>Email:</strong> {{ user.email }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Role:</strong> {{ user.role }}</p>
+                    <p><strong>Account Status:</strong> 
+                        {% if user.is_active %}
+                            <span class="badge badge-success">Active</span>
+                        {% else %}
+                            <span class="badge badge-danger">Inactive</span>
+                        {% endif %}
+                    </p>
+                    <p><strong>Last Login:</strong> {{ user.last_login|date:"Y-m-d H:i:s"|default:"First login" }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="alert alert-warning mt-4" role="alert">
+        <h6>🔓 Vulnerability Analysis</h6>
+        <p>You have successfully logged in using plain text password authentication. This demonstrates how the vulnerability allows normal authentication while exposing critical security risks.</p>
+    </div>
+
+    <div class="mt-4">
+        <a href="/auth-service/lab1" class="btn btn-primary">← Back to Lab 1</a>
+        <a href="/auth-service" class="btn btn-secondary">Return to Lab Home</a>
+    </div>
+</div>
+{% endblock %}

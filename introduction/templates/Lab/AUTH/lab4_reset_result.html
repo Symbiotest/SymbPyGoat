@@ -1,0 +1,205 @@
+{% extends 'introduction/base.html' %}
+{% block content %}
+{% block title %}
+<title>Lab 4: Password Reset Results</title>
+{% endblock %}
+
+<div class="content">
+    <h2>🎲 Lab 4: Password Reset Token Results</h2>
+    
+    {% if result.success %}
+    <div class="alert alert-success" role="alert">
+        <h4 class="alert-heading">✅ Password Reset Token Generated!</h4>
+        <p>A password reset token has been successfully generated for <strong>{{ result.token }}</strong>.</p>
+    </div>
+
+    <div class="card border-warning">
+        <div class="card-header bg-warning text-dark">
+            <h5>🚨 Token Generation Vulnerability Analysis</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>Generated Token Details:</h6>
+                    <p><strong>Reset Token:</strong> <code class="text-danger">{{ result.token }}</code></p>
+                    <p><strong>Expiry Time:</strong> {{ result.expiry|date:"Y-m-d H:i:s" }}</p>
+                    <p><strong>Vulnerability:</strong> {{ result.vulnerability }}</p>
+                </div>
+                <div class="col-md-6">
+                    <h6>Security Analysis:</h6>
+                    <p><strong>Pattern Type:</strong> 
+                        {% if "reset_" in result.token %}
+                            <span class="badge badge-danger">Sequential Pattern</span>
+                        {% else %}
+                            <span class="badge badge-warning">Weak Algorithm</span>
+                        {% endif %}
+                    </p>
+                    <p><strong>Predictability:</strong> <span class="badge badge-danger">High</span></p>
+                    <p><strong>Entropy:</strong> <span class="badge badge-danger">Low</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Token Analysis -->
+    <div class="card border-danger mt-4">
+        <div class="card-header bg-danger text-white">
+            <h5>🔍 Token Predictability Analysis</h5>
+        </div>
+        <div class="card-body">
+            {% if "reset_" in result.token %}
+            <p><strong>Sequential Pattern Detected:</strong></p>
+            <p>The token follows the pattern: <code>reset_[user_id]_[timestamp]</code></p>
+            <ul>
+                <li>User ID component can be enumerated or guessed</li>
+                <li>Timestamp can be predicted within a reasonable window</li>
+                <li>Attackers can generate valid tokens for other users</li>
+            </ul>
+            {% else %}
+            <p><strong>Weak Algorithm Detected:</strong></p>
+            <p>The token appears to use a weak generation method that may include:</p>
+            <ul>
+                <li>Partial hash of predictable data</li>
+                <li>Weak pseudo-random number generation</li>
+                <li>Insufficient entropy for security</li>
+            </ul>
+            {% endif %}
+            
+            <div class="alert alert-danger mt-3">
+                <strong>Attack Scenario:</strong> An attacker could:
+                <ol>
+                    <li>Request password resets for their own account</li>
+                    <li>Analyze the token generation pattern</li>
+                    <li>Predict tokens for target victim accounts</li>
+                    <li>Use predicted tokens to reset victim passwords</li>
+                    <li>Gain unauthorized access to victim accounts</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <!-- Usage Instructions -->
+    <div class="card border-info mt-4">
+        <div class="card-header bg-info text-white">
+            <h5>🎯 How to Use This Token</h5>
+        </div>
+        <div class="card-body">
+            <p>You can use this token to reset the password:</p>
+            <ol>
+                <li>Copy the token: <code>{{ result.token }}</code></li>
+                <li>Go back to the main lab page</li>
+                <li>Paste the token in the "Reset Password" form</li>
+                <li>Enter a new password</li>
+                <li>Submit to complete the password reset</li>
+            </ol>
+            <a href="/auth-service/lab4" class="btn btn-primary">Return to Lab 4</a>
+        </div>
+    </div>
+
+    {% else %}
+    <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">❌ Token Generation Failed</h4>
+        <p>There was an error generating the password reset token.</p>
+    </div>
+
+    <div class="card border-warning">
+        <div class="card-header bg-warning text-dark">
+            <h5>⚠️ Error Details</h5>
+        </div>
+        <div class="card-body">
+            <p><strong>Error Message:</strong> {{ result.error }}</p>
+            <p>This error might occur because:</p>
+            <ul>
+                <li>The email address is not registered in the system</li>
+                <li>There's no user account associated with the provided email</li>
+                <li>A database error occurred during token generation</li>
+            </ul>
+            
+            <div class="alert alert-info mt-3">
+                <strong>Note:</strong> In this educational environment, the error message reveals whether the email exists in the system. 
+                This is also a vulnerability (information disclosure) that would help attackers enumerate valid email addresses.
+            </div>
+        </div>
+    </div>
+
+    <!-- Information Disclosure Analysis -->
+    <div class="card border-warning mt-4">
+        <div class="card-header bg-warning text-dark">
+            <h5>🚨 Information Disclosure Vulnerability</h5>
+        </div>
+        <div class="card-body">
+            <p>The specific error message "{{ result.error }}" reveals sensitive information:</p>
+            <ul>
+                <li><strong>Account Existence:</strong> Confirms whether an email is registered</li>
+                <li><strong>User Enumeration:</strong> Helps attackers build lists of valid accounts</li>
+                <li><strong>System Information:</strong> Exposes internal system details</li>
+            </ul>
+            
+            <h6 class="mt-3">Secure Implementation:</h6>
+            <p>A secure system should return the same message regardless of whether the email exists:</p>
+            <blockquote class="blockquote">
+                <p class="mb-0">"If an account with that email exists, a password reset link has been sent."</p>
+            </blockquote>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Educational Content -->
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card border-info">
+                <div class="card-header bg-info text-white">
+                    <h5>🎯 Learning Objectives</h5>
+                </div>
+                <div class="card-body">
+                    <ul>
+                        <li>Understand token predictability vulnerabilities</li>
+                        <li>Learn about cryptographically secure random generation</li>
+                        <li>Recognize information disclosure risks</li>
+                        <li>Practice token analysis and pattern recognition</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card border-success">
+                <div class="card-header bg-success text-white">
+                    <h5>🛡️ Mitigation Strategies</h5>
+                </div>
+                <div class="card-body">
+                    <ul>
+                        <li>Use cryptographically secure random token generation</li>
+                        <li>Implement consistent error messages</li>
+                        <li>Set short token expiration times</li>
+                        <li>Enforce single-use tokens</li>
+                        <li>Rate limit password reset requests</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a href="/auth-service/lab4" class="btn btn-warning">← Back to Lab 4</a>
+        <a href="/auth-service" class="btn btn-secondary">Lab Home</a>
+        <a href="/auth-service/lab5" class="btn btn-primary">Next Lab →</a>
+    </div>
+</div>
+
+<style>
+code {
+    background-color: #f8f9fa;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-size: 0.9em;
+}
+.blockquote {
+    background-color: #f8f9fa;
+    border-left: 4px solid #28a745;
+    padding: 15px;
+    margin: 15px 0;
+}
+</style>
+
+{% endblock %}

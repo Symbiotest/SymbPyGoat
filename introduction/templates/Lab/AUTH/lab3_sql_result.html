@@ -1,0 +1,221 @@
+{% extends 'introduction/base.html' %}
+{% block content %}
+{% block title %}
+<title>Lab 3: SQL Injection Results</title>
+{% endblock %}
+
+<div class="content">
+    <h2>💉 Lab 3: SQL Injection Attack Results</h2>
+    
+    {% if result.success %}
+    <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">🚨 SQL Injection Attack Successful!</h4>
+        <p>The authentication was bypassed using SQL injection. This is a critical security vulnerability.</p>
+    </div>
+
+    <div class="card border-danger">
+        <div class="card-header bg-danger text-white">
+            <h5>💀 Attack Analysis</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>Input Values:</h6>
+                    <p><strong>Username:</strong> <code>{{ username }}</code></p>
+                    <p><strong>Password:</strong> <code>{{ password }}</code></p>
+                </div>
+                <div class="col-md-6">
+                    <h6>Vulnerability Info:</h6>
+                    <p><strong>Attack Type:</strong> {{ result.vulnerability }}</p>
+                    <p><strong>Status:</strong> <span class="badge badge-danger">Authentication Bypassed</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card border-warning mt-4">
+        <div class="card-header bg-warning text-dark">
+            <h5>📊 Executed SQL Query</h5>
+        </div>
+        <div class="card-body">
+            <p><strong>The following SQL query was executed:</strong></p>
+            <pre class="bg-light p-3 border"><code>{{ result.query }}</code></pre>
+            <p class="text-danger"><strong>Notice:</strong> The injected SQL modified the query logic, allowing unauthorized access.</p>
+        </div>
+    </div>
+
+    {% if result.user %}
+    <div class="card border-info mt-4">
+        <div class="card-header bg-info text-white">
+            <h5>👤 Compromised User Data</h5>
+        </div>
+        <div class="card-body">
+            <p>The SQL injection attack provided access to the following user account:</p>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>User ID</th>
+                            <th>Username</th>
+                            <th>Password</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{ result.user.user_id }}</td>
+                            <td><strong>{{ result.user.username }}</strong></td>
+                            <td class="text-danger">{{ result.user.password }}</td>
+                            <td>{{ result.user.email }}</td>
+                            <td>{{ result.user.role }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% else %}
+    <div class="alert alert-warning" role="alert">
+        <h4 class="alert-heading">⚠️ Attack Failed or Error Occurred</h4>
+        <p>The SQL injection attempt did not succeed in bypassing authentication.</p>
+    </div>
+
+    <div class="card border-warning">
+        <div class="card-header bg-warning text-dark">
+            <h5>🔍 Attack Analysis</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>Input Values:</h6>
+                    <p><strong>Username:</strong> <code>{{ username }}</code></p>
+                    <p><strong>Password:</strong> <code>{{ password }}</code></p>
+                </div>
+                <div class="col-md-6">
+                    <h6>Result:</h6>
+                    <p><strong>Error:</strong> {{ result.error }}</p>
+                    {% if result.vulnerability %}
+                    <p><strong>Vulnerability:</strong> {{ result.vulnerability }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if result.query %}
+    <div class="card border-info mt-4">
+        <div class="card-header bg-info text-white">
+            <h5>📊 Executed SQL Query</h5>
+        </div>
+        <div class="card-body">
+            <pre class="bg-light p-3 border"><code>{{ result.query }}</code></pre>
+            <p class="text-info">This query was executed but did not return valid user data or caused an error.</p>
+        </div>
+    </div>
+    {% endif %}
+    {% endif %}
+
+    <!-- Educational Content -->
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h5>🎯 What Happened?</h5>
+                </div>
+                <div class="card-body">
+                    {% if result.success %}
+                    <p>The SQL injection attack succeeded because:</p>
+                    <ul>
+                        <li>User input was directly concatenated into the SQL query</li>
+                        <li>No input validation or sanitization was performed</li>
+                        <li>The injected SQL modified the query logic</li>
+                        <li>The WHERE clause was manipulated to always return true</li>
+                    </ul>
+                    {% else %}
+                    <p>The attack may have failed because:</p>
+                    <ul>
+                        <li>The payload didn't match the expected SQL syntax</li>
+                        <li>No matching records were found in the database</li>
+                        <li>A database error occurred during execution</li>
+                        <li>The injection didn't properly close SQL strings</li>
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card border-success">
+                <div class="card-header bg-success text-white">
+                    <h5>🛡️ How to Prevent This</h5>
+                </div>
+                <div class="card-body">
+                    <ul>
+                        <li><strong>Use Parameterized Queries:</strong> Always use prepared statements</li>
+                        <li><strong>Input Validation:</strong> Validate and sanitize all user inputs</li>
+                        <li><strong>Least Privilege:</strong> Database users should have minimal permissions</li>
+                        <li><strong>Error Handling:</strong> Don't expose database errors to users</li>
+                        <li><strong>WAF:</strong> Use Web Application Firewalls for additional protection</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Next Steps -->
+    <div class="card border-info mt-4">
+        <div class="card-header bg-info text-white">
+            <h5>🔍 Try More Attacks</h5>
+        </div>
+        <div class="card-body">
+            {% if result.success %}
+            <p>✅ You successfully demonstrated SQL injection! Try these advanced techniques:</p>
+            {% else %}
+            <p>Try different SQL injection payloads to bypass authentication:</p>
+            {% endif %}
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>More Basic Payloads:</h6>
+                    <ul>
+                        <li><code>' OR 1=1--</code></li>
+                        <li><code>' OR 'a'='a</code></li>
+                        <li><code>admin'/*</code></li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h6>Advanced Techniques:</h6>
+                    <ul>
+                        <li>Try UNION SELECT attacks</li>
+                        <li>Experiment with comment variations</li>
+                        <li>Test different quote escaping methods</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a href="/auth-service/lab3" class="btn btn-danger">← Try Another Attack</a>
+        <a href="/auth-service" class="btn btn-secondary">Lab Home</a>
+        <a href="/auth-service/lab4" class="btn btn-primary">Next Lab →</a>
+    </div>
+</div>
+
+<style>
+code {
+    background-color: #f8f9fa;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-size: 0.9em;
+}
+pre code {
+    background-color: transparent;
+    padding: 0;
+}
+</style>
+
+{% endblock %}

@@ -1,0 +1,453 @@
+/* 
+   Vulnerable Authentication Service - Educational Security CSS
+   Custom styling for the authentication vulnerability laboratories
+*/
+
+/* Main authentication service styling */
+.auth-service-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Vulnerability alert styling */
+.vulnerability-alert {
+    border-left: 5px solid #dc3545;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+
+.vulnerability-alert.warning {
+    border-left-color: #ffc107;
+    background-color: #fff3cd;
+    border-color: #ffeaa7;
+    color: #856404;
+}
+
+.vulnerability-alert.info {
+    border-left-color: #17a2b8;
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+    color: #0c5460;
+}
+
+/* Lab card styling */
+.lab-card {
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.lab-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.lab-card.lab-danger {
+    border-left: 5px solid #dc3545;
+}
+
+.lab-card.lab-warning {
+    border-left: 5px solid #ffc107;
+}
+
+.lab-card.lab-info {
+    border-left: 5px solid #17a2b8;
+}
+
+.lab-card.lab-success {
+    border-left: 5px solid #28a745;
+}
+
+/* Vulnerability demonstration tables */
+.vuln-table {
+    background-color: #fff;
+    border: 1px solid #dc3545;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.vuln-table thead {
+    background-color: #dc3545;
+    color: white;
+}
+
+.vuln-table .password-exposed {
+    background-color: #ffebee;
+    color: #d32f2f;
+    font-weight: bold;
+    font-family: 'Courier New', monospace;
+}
+
+.vuln-table .token-exposed {
+    background-color: #fff3e0;
+    color: #f57c00;
+    font-weight: bold;
+    font-family: 'Courier New', monospace;
+}
+
+/* Code highlighting */
+.code-block {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 5px;
+    padding: 15px;
+    font-family: 'Courier New', Monaco, monospace;
+    overflow-x: auto;
+}
+
+.code-vulnerable {
+    border-left: 4px solid #dc3545;
+    background-color: #fff5f5;
+}
+
+.code-secure {
+    border-left: 4px solid #28a745;
+    background-color: #f5fff5;
+}
+
+.code-highlight {
+    background-color: #fff3cd;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+}
+
+/* Attack simulation sections */
+.attack-simulation {
+    background: linear-gradient(45deg, #fff3e0, #ffebee);
+    border: 2px solid #ff9800;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.attack-steps {
+    counter-reset: attack-counter;
+}
+
+.attack-steps li {
+    counter-increment: attack-counter;
+    margin-bottom: 10px;
+    padding-left: 30px;
+    position: relative;
+}
+
+.attack-steps li::before {
+    content: counter(attack-counter);
+    position: absolute;
+    left: 0;
+    top: 0;
+    background-color: #dc3545;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* Response timing indicators */
+.timing-fast {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+.timing-slow {
+    color: #ffc107;
+    font-weight: bold;
+}
+
+.timing-indicator {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    font-weight: bold;
+}
+
+.timing-indicator.fast {
+    background-color: #ffebee;
+    color: #d32f2f;
+}
+
+.timing-indicator.slow {
+    background-color: #fff3e0;
+    color: #f57c00;
+}
+
+/* Security status badges */
+.security-badge {
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-size: 0.85em;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.security-badge.critical {
+    background-color: #dc3545;
+    color: white;
+}
+
+.security-badge.high {
+    background-color: #fd7e14;
+    color: white;
+}
+
+.security-badge.medium {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.security-badge.low {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.security-badge.secure {
+    background-color: #28a745;
+    color: white;
+}
+
+/* Form styling for labs */
+.lab-form {
+    background-color: #ffffff;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 25px;
+    margin-bottom: 20px;
+}
+
+.lab-form .form-group label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 8px;
+}
+
+.lab-form .form-control {
+    border: 2px solid #e9ecef;
+    border-radius: 5px;
+    padding: 12px;
+    transition: border-color 0.3s ease;
+}
+
+.lab-form .form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+
+/* Navigation breadcrumbs for labs */
+.lab-navigation {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.lab-navigation .breadcrumb {
+    margin-bottom: 0;
+    background-color: transparent;
+}
+
+/* Educational content boxes */
+.learning-box {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.learning-box h5 {
+    color: white;
+    margin-bottom: 15px;
+}
+
+.mitigation-box {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    color: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.mitigation-box h5 {
+    color: white;
+    margin-bottom: 15px;
+}
+
+/* API endpoint documentation */
+.api-endpoint {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    padding: 15px;
+    margin: 10px 0;
+    font-family: 'Courier New', monospace;
+}
+
+.api-method {
+    font-weight: bold;
+    padding: 4px 8px;
+    border-radius: 3px;
+    margin-right: 10px;
+}
+
+.api-method.post {
+    background-color: #fd7e14;
+    color: white;
+}
+
+.api-method.get {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.api-method.put {
+    background-color: #6f42c1;
+    color: white;
+}
+
+.api-method.delete {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .auth-service-container {
+        padding: 10px;
+    }
+    
+    .lab-card {
+        margin-bottom: 15px;
+    }
+    
+    .code-block {
+        font-size: 0.85em;
+        padding: 10px;
+    }
+    
+    .attack-simulation {
+        padding: 15px;
+    }
+}
+
+/* Animation for vulnerability demonstrations */
+@keyframes vulnerability-highlight {
+    0% { background-color: transparent; }
+    50% { background-color: #ffebee; }
+    100% { background-color: transparent; }
+}
+
+.vulnerability-highlight {
+    animation: vulnerability-highlight 2s ease-in-out infinite;
+}
+
+/* Special styling for password visibility toggles */
+.password-toggle {
+    cursor: pointer;
+    user-select: none;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.password-toggle:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+/* Session info displays */
+.session-info {
+    background: linear-gradient(90deg, #FFB75D, #ED8F5B);
+    border-radius: 8px;
+    padding: 15px;
+    color: white;
+    margin: 15px 0;
+}
+
+.session-info h6 {
+    color: white;
+    margin-bottom: 10px;
+}
+
+/* Error message styling */
+.error-message {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    border-radius: 5px;
+    padding: 12px;
+    margin: 10px 0;
+}
+
+.success-message {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    border-radius: 5px;
+    padding: 12px;
+    margin: 10px 0;
+}
+
+/* Token analysis styling */
+.token-analysis {
+    background-color: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 5px;
+    padding: 15px;
+    margin: 15px 0;
+}
+
+.token-pattern {
+    font-family: 'Courier New', monospace;
+    background-color: #f8f9fa;
+    padding: 8px 12px;
+    border-radius: 4px;
+    border: 1px solid #dee2e6;
+    display: inline-block;
+    margin: 5px 0;
+}
+
+/* Lab progress indicators */
+.lab-progress {
+    background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+    height: 4px;
+    border-radius: 2px;
+    margin: 20px 0;
+    overflow: hidden;
+}
+
+.lab-progress-bar {
+    height: 100%;
+    background: white;
+    transition: width 0.3s ease;
+}
+
+/* Print styles */
+@media print {
+    .vulnerability-alert,
+    .attack-simulation,
+    .learning-box,
+    .mitigation-box {
+        background: white !important;
+        border: 1px solid #000 !important;
+        color: #000 !important;
+    }
+    
+    .lab-card {
+        page-break-inside: avoid;
+        box-shadow: none;
+    }
+}

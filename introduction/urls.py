@@ -120,4 +120,14 @@ urlpatterns = [
     path("mitre/25/lab", mitre.mitre_lab_25, name="mitre_lab_25"),
     path("mitre/17/lab", mitre.mitre_lab_17, name="mitre_lab_17"),
     path("mitre/17/lab/api",mitre.mitre_lab_17_api,name="mitre_lab_17_api"),
+    ##------------------- Vulnerable Authentication Service endpoints -----------------|
+    path("auth-service/", views.auth_service_home, name="auth_service_home"),
+    path("auth-service/lab1", views.lab1_plaintext_passwords, name="lab1_plaintext_passwords"),
+    path("auth-service/lab2", views.lab2_session_fixation, name="lab2_session_fixation"),
+    path("auth-service/lab3", views.lab3_sql_injection, name="lab3_sql_injection"),
+    path("auth-service/lab4", views.lab4_reset_tokens, name="lab4_reset_tokens"),
+    path("auth-service/lab5", views.lab5_username_enumeration, name="lab5_username_enumeration"),
+    path("auth-service/api/authenticate", views.api_authenticate, name="api_authenticate"),
+    path("auth-service/api/reset-token", views.api_reset_token, name="api_reset_token"),
+    path("auth-service/api/session-info", views.api_session_info, name="api_session_info"),
 ]

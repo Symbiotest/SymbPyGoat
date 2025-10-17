@@ -55,12 +55,15 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'introduction.middleware.RequestCorrelationMiddleware',
+    'introduction.middleware.SecurityLoggingMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'introduction.middleware.SecurityHeadersMiddleware',
 ]
 
 ROOT_URLCONF = 'pygoat.urls'
@@ -170,3 +173,153 @@ SOCIALACCOUNT_PROVIDERS = {
 
 SECRET_COOKIE_KEY = "PYGOAT"
 CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1:8000","http://0.0.0.0:8000","http://172.16.189.10"]
+
+# Security Logging Configuration
+LOGGING_RATE_LIMIT_WINDOW = 300  # 5 minutes
+LOGGING_RATE_LIMIT_MAX_REQUESTS = 100
+LOGGING_SLOW_RESPONSE_THRESHOLD = 2.0  # seconds
+LOGGING_MAX_FILE_SIZE = 10 * 1024 * 1024  # 10MB
+
+# Paths that require enhanced security logging
+LOGGING_SENSITIVE_PATHS = [
+    '/admin/',
+    '/login/',
+    '/register/',
+    '/password/',
+    '/api/auth/',
+    '/challenge/',
+    '/introduction/admin/',
+]
+
+# Paths to exclude from detailed logging (performance reasons)
+LOGGING_EXCLUDED_PATHS = [
+    '/static/',
+    '/media/',
+    '/favicon.ico',
+    '/health/',
+    '/ping/',
+    '/robots.txt',
+]
+
+# Comprehensive Logging Configuration
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+        'json': {
+            'format': '{asctime} {levelname} {name} {message}',
+            'style': '{',
+        },
+        'security': {
+            'format': '[SECURITY] {asctime} {levelname} {name} {message}',
+            'style': '{',
+        },
+        'audit': {
+            'format': '[AUDIT] {asctime} {message}',
+            'style': '{',
+        },
+    },
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        },
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'pygoat.log'),
+            'maxBytes': 1024*1024*50,  # 50 MB
+            'backupCount': 5,
+            'formatter': 'verbose',
+        },
+        'security_file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'security.log'),
+            'maxBytes': 1024*1024*100,  # 100 MB
+            'backupCount': 10,
+            'formatter': 'security',
+        },
+        'audit_file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'audit.log'),
+            'maxBytes': 1024*1024*50,  # 50 MB
+            'backupCount': 10,
+            'formatter': 'audit',
+        },
+        'error_file': {
+            'level': 'ERROR',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'errors.log'),
+            'maxBytes': 1024*1024*50,  # 50 MB
+            'backupCount': 5,
+            'formatter': 'verbose',
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler',
+            'formatter': 'verbose',
+        },
+    },
+    'root': {
+        'level': 'INFO',
+        'handlers': ['console', 'file'],
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'file', 'mail_admins'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'django.request': {
+            'handlers': ['error_file', 'mail_admins'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'django.security.*': {
+            'handlers': ['security_file'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'security': {
+            'handlers': ['security_file', 'console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'audit': {
+            'handlers': ['audit_file'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'introduction': {
+            'handlers': ['file', 'console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'challenge': {
+            'handlers': ['file', 'security_file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}

@@ -28,6 +28,17 @@ from .access_control_views import (
     a1_broken_access_lab_3, 
     a1_broken_access_lab3_secret
 )
+from .auth_service import (
+    auth_service_home,
+    lab1_plaintext_passwords,
+    lab2_session_fixation,
+    lab3_sql_injection,
+    lab4_reset_tokens,
+    lab5_username_enumeration,
+    api_authenticate,
+    api_reset_token,
+    api_session_info
+)
 
 # Make all views available when importing from vulnerabilities package
 __all__ = [
@@ -79,5 +90,16 @@ __all__ = [
     # A1: Broken Access Control views
     'ba', 'ba_lab',
     'a1_broken_access', 'a1_broken_access_lab_1', 'a1_broken_access_lab_2',
-    'a1_broken_access_lab_3', 'a1_broken_access_lab3_secret'
+    'a1_broken_access_lab_3', 'a1_broken_access_lab3_secret',
+    
+    # Vulnerable Authentication Service views
+    'auth_service_home',
+    'lab1_plaintext_passwords',
+    'lab2_session_fixation', 
+    'lab3_sql_injection',
+    'lab4_reset_tokens',
+    'lab5_username_enumeration',
+    'api_authenticate',
+    'api_reset_token',
+    'api_session_info'
 ]

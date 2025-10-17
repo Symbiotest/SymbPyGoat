@@ -1,0 +1,226 @@
+{% extends 'introduction/base.html' %}
+{% block content %}
+{% block title %}
+<title>Lab 5: Username Enumeration Results</title>
+{% endblock %}
+
+<div class="content">
+    <h2>🕵️ Lab 5: Username Enumeration Attack Results</h2>
+    
+    {% if result.success %}
+    <div class="alert alert-success" role="alert">
+        <h4 class="alert-heading">✅ Authentication Successful</h4>
+        <p>Welcome back, <strong>{{ result.user.username }}</strong>!</p>
+    </div>
+    {% else %}
+    <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">❌ Authentication Failed</h4>
+        <p>The login attempt was unsuccessful.</p>
+    </div>
+    {% endif %}
+
+    <div class="card border-warning">
+        <div class="card-header bg-warning text-dark">
+            <h5>🚨 Username Enumeration Vulnerability Analysis</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>Request Details:</h6>
+                    <p><strong>Username Tested:</strong> <code>{{ username }}</code></p>
+                    <p><strong>Response Time:</strong> <code>{{ result.response_time|floatformat:3 }}s</code></p>
+                    <p><strong>Error Message:</strong> <span class="text-danger">{{ result.error }}</span></p>
+                </div>
+                <div class="col-md-6">
+                    <h6>Vulnerability Assessment:</h6>
+                    <p><strong>Vulnerability Type:</strong> {{ result.vulnerability }}</p>
+                    <p><strong>Information Disclosed:</strong> 
+                        {% if "Username not found" in result.error %}
+                            <span class="badge badge-danger">Username Validity</span>
+                        {% elif "Invalid password" in result.error %}
+                            <span class="badge badge-warning">Username Exists</span>
+                        {% else %}
+                            <span class="badge badge-info">Generic Error</span>
+                        {% endif %}
+                    </p>
+                    <p><strong>Timing Pattern:</strong> 
+                        {% if result.response_time < 0.05 %}
+                            <span class="badge badge-danger">Fast (Invalid User)</span>
+                        {% else %}
+                            <span class="badge badge-warning">Slow (Valid User)</span>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vulnerability Analysis -->
+    <div class="card border-danger mt-4">
+        <div class="card-header bg-danger text-white">
+            <h5>🔍 Attack Analysis</h5>
+        </div>
+        <div class="card-body">
+            {% if "Username not found" in result.error %}
+            <div class="alert alert-danger">
+                <h6>💀 Username Enumeration Successful!</h6>
+                <p>The error message reveals that the username <strong>"{{ username }}"</strong> does not exist in the system.</p>
+            </div>
+            
+            <p><strong>What this reveals to an attacker:</strong></p>
+            <ul>
+                <li>This specific username is not registered</li>
+                <li>The application distinguishes between invalid usernames and passwords</li>
+                <li>Attackers can build lists of valid vs invalid usernames</li>
+                <li>Fast response time confirms this is likely an invalid username</li>
+            </ul>
+            
+            {% elif "Invalid password" in result.error %}
+            <div class="alert alert-warning">
+                <h6>⚠️ Username Existence Confirmed!</h6>
+                <p>The error message confirms that the username <strong>"{{ username }}"</strong> exists in the system.</p>
+            </div>
+            
+            <p><strong>What this reveals to an attacker:</strong></p>
+            <ul>
+                <li>This username is valid and registered</li>
+                <li>Attackers now know this is a valid target for password attacks</li>
+                <li>Slower response time confirms password processing occurred</li>
+                <li>This account can be targeted for brute force attacks</li>
+            </ul>
+            
+            {% else %}
+            <div class="alert alert-info">
+                <h6>ℹ️ Generic Error Response</h6>
+                <p>The application returned a generic error message.</p>
+            </div>
+            {% endif %}
+            
+            <h6 class="mt-3">Timing Attack Evidence:</h6>
+            <p>Response time of <strong>{{ result.response_time|floatformat:3 }}s</strong> provides additional information:</p>
+            <ul>
+                {% if result.response_time < 0.05 %}
+                <li class="text-danger">⚡ Very fast response suggests immediate rejection (invalid username)</li>
+                <li class="text-danger">No password processing delay indicates username lookup failed</li>
+                {% else %}
+                <li class="text-warning">🐌 Slower response suggests password processing occurred</li>
+                <li class="text-warning">Processing delay indicates valid username with password check</li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- Attack Demonstration -->
+    <div class="card border-info mt-4">
+        <div class="card-header bg-info text-white">
+            <h5>🎯 Automated Attack Simulation</h5>
+        </div>
+        <div class="card-body">
+            <p><strong>How an attacker would exploit this:</strong></p>
+            <ol>
+                <li><strong>Username List:</strong> Create list of common usernames to test</li>
+                <li><strong>Automated Testing:</strong> Script to test each username and measure response time</li>
+                <li><strong>Pattern Analysis:</strong> Categorize responses by error message and timing</li>
+                <li><strong>Valid Username List:</strong> Compile confirmed valid usernames</li>
+                <li><strong>Targeted Attacks:</strong> Focus password attacks on confirmed valid accounts</li>
+            </ol>
+            
+            <div class="mt-3">
+                <h6>Pseudocode for Enumeration Attack:</h6>
+                <pre class="bg-light p-3"><code>for username in common_usernames:
+    start_time = time.now()
+    response = login_attempt(username, "dummy_password")
+    end_time = time.now()
+    
+    if "Username not found" in response.error:
+        mark_invalid(username)
+    elif "Invalid password" in response.error:
+        mark_valid(username)  # Valid username found!
+    
+    if (end_time - start_time) > 0.1:
+        likely_valid_usernames.add(username)</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- Secure Implementation -->
+    <div class="card border-success mt-4">
+        <div class="card-header bg-success text-white">
+            <h5>🛡️ Secure Implementation Example</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h6 class="text-danger">❌ Current Vulnerable Code:</h6>
+                    <pre class="bg-light p-3"><code>if not user_exists(username):
+    return "Username not found"
+if not password_valid(user, password):
+    return "Invalid password"</code></pre>
+                </div>
+                <div class="col-md-6">
+                    <h6 class="text-success">✅ Secure Implementation:</h6>
+                    <pre class="bg-light p-3"><code>user = get_user(username)
+# Always perform password check
+password_valid = check_password(password, user.hash if user else dummy_hash)
+if not user or not password_valid:
+    return "Invalid credentials"</code></pre>
+                </div>
+            </div>
+            
+            <h6 class="mt-3">Key Security Improvements:</h6>
+            <ul>
+                <li><strong>Generic Error Messages:</strong> Same message for all authentication failures</li>
+                <li><strong>Constant Time Processing:</strong> Always perform password hashing (even for invalid users)</li>
+                <li><strong>Rate Limiting:</strong> Prevent automated enumeration attempts</li>
+                <li><strong>Account Lockout:</strong> Temporarily disable accounts after failed attempts</li>
+                <li><strong>Logging:</strong> Monitor for enumeration patterns</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Testing Exercise -->
+    <div class="card border-warning mt-4">
+        <div class="card-header bg-warning text-dark">
+            <h5>🔬 Continue Testing</h5>
+        </div>
+        <div class="card-body">
+            <p>To fully understand this vulnerability, try testing with different usernames:</p>
+            
+            <div class="row">
+                <div class="col-md-4">
+                    <h6>Test Valid Usernames:</h6>
+                    <p>Use usernames from Lab 1 registration to see the "Invalid password" message and timing difference.</p>
+                </div>
+                <div class="col-md-4">
+                    <h6>Test Invalid Usernames:</h6>
+                    <p>Try: admin, test, user123, nonexistent to see "Username not found" messages.</p>
+                </div>
+                <div class="col-md-4">
+                    <h6>Compare Response Times:</h6>
+                    <p>Notice the consistent timing patterns between valid and invalid usernames.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a href="/auth-service/lab5" class="btn btn-info">← Try Another Username</a>
+        <a href="/auth-service" class="btn btn-secondary">Return to Lab Home</a>
+        <a href="/auth-service/api/authenticate" class="btn btn-primary">Test API Endpoint</a>
+    </div>
+</div>
+
+<style>
+code {
+    background-color: #f8f9fa;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-size: 0.9em;
+}
+pre code {
+    background-color: transparent;
+    padding: 0;
+}
+</style>
+
+{% endblock %}

@@ -95,3 +95,38 @@ class CSRF_user_tbl(models.Model):
     
     def __str__(self):
         return self.username
+
+# Vulnerable Authentication Service Models
+class VulnUser(models.Model):
+    user_id = models.AutoField(primary_key=True)
+    username = models.CharField(max_length=50)
+    password = models.CharField(max_length=100)  # Deliberately storing plain text passwords
+    email = models.EmailField()
+    role = models.CharField(max_length=20, default='user')
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    last_login = models.DateTimeField(blank=True, null=True)
+    
+    def __str__(self):
+        return self.username
+
+class VulnSession(models.Model):
+    session_id = models.CharField(max_length=100, primary_key=True)
+    user_reference = models.ForeignKey(VulnUser, on_delete=models.CASCADE)
+    creation_time = models.DateTimeField(auto_now_add=True)
+    last_activity = models.DateTimeField(auto_now=True)
+    session_data = models.TextField(blank=True)
+    
+    def __str__(self):
+        return f"Session {self.session_id} for {self.user_reference.username}"
+
+class VulnPasswordReset(models.Model):
+    token_id = models.AutoField(primary_key=True)
+    user_email = models.EmailField()
+    reset_token = models.CharField(max_length=100)  # Predictable token generation
+    expiry_time = models.DateTimeField()
+    used_status = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"Reset token for {self.user_email}"

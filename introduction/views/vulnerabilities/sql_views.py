@@ -13,11 +13,11 @@ def sql_lab(request):
     
     if request.method == 'POST':
         search = request.POST.get('search', '')
-        query = f"SELECT * FROM introduction_sql_lab_table WHERE name LIKE '%{search}%'"
+        query = "SELECT * FROM introduction_sql_lab_table WHERE name LIKE %s"
         
         try:
             with connection.cursor() as cursor:
-                cursor.execute(query)
+                cursor.execute(query, [f"%{search}%"])
                 columns = [col[0] for col in cursor.description]
                 results = [dict(zip(columns, row)) for row in cursor.fetchall()]
         except Exception as e:
