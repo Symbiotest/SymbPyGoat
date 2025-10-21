@@ -323,7 +323,7 @@ def command_out(args):
     return result.stdout, result.stderr
     
 
-@csrf_exempt
+@csrf_exempt -- not required
 def mitre_lab_17_api(request):
     if request.method == "POST":
         ip = (request.POST.get('ip') or '').strip()
